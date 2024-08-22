@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Required meta tags -->
 
-    <title>Login Kasir</title>
+    <title>Login.</title>
 
     <!-- Favicon -->
     <link rel="icon" href="img/core-img/favicon.png">
