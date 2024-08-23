@@ -22,6 +22,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/dashboard/add', [AdminController::class, 'add'])->name('admin.add');
     Route::post('/admin/dashboard/store', [AdminController::class, 'store'])->name('admin.store');
+    Route::get('/admin/dashboard/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::put('/admin/dashboard/update/{id}', [AdminController::class, 'update'])->name('admin.update');
+    Route::delete('/admin/dashboard/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
 
     // Kasir
     Route::get('/kasir/dashboard', [KasirController::class, 'index'])->name('kasir.index');

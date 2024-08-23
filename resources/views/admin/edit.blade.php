@@ -183,89 +183,106 @@
                         <div class="row">
 
                             {{-- cek if message --}}
-                            @if (session('message'))
+                            @if (session('status'))
                                 <div class="alert alert-success" role="alert">
-                                    <strong>Sukses</strong> {{ Session::get('message') }}
+                                    <strong>Sukses</strong> Aksi Berhasil
                                 </div>
                             @endif
 
-                            <div class="col-12 col-sm-6 col-xl">
-                                <!-- Card -->
-                                <div class="card box-margin">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col">
-                                                <!-- Title -->
-                                                <h6 class="text-uppercase font-14">
-                                                    TANGGAL & WAKTU
-                                                </h6>
-
-                                                <!-- Heading -->
-                                                <span class="font-24 text-dark mb-0" id="current-time">
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
                                 </div>
-                            </div>
+                            @endif
 
                             {{-- body --}}
 
                             <div class="row">
-                                <div class="col-12 box-margin">
+                                <div class="col-8 box-margin">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center mb-50">
-                                                <h4 class="card-title mb-0">Order <span
-                                                        class="break-320-480-none">Summary</span></h4>
-                                                <div class="d-flex">
-                                                    <a href="{{ route('admin.add') }}" class="btn btn-primary btn-sm mr-2">Tambah Buku</a>
-                                                </div>
+                                                <h4 class="card-title mb-0">Tambah <span
+                                                        class="break-320-480-none">Buku</span></h4>
                                             </div>
 
-                                            <table id="datatable-buttons" class="table table-striped dt-responsive nowrap w-100">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>Nama Buku</th>
-                                                        <th>Stok</th>
-                                                        <th>Harga</th>
-                                                        <th>Status</th>
-                                                        <th>Aksi</th>
-                                                    </tr>
-                                                </thead>
+                                            {{-- MAIN CONTENT --}}
+                                            <form action="{{ route('admin.update', $book->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="form-group mb-3">
+                                                    <label for="id">ID Buku</label>
+                                                    <input type="number" class="form-control" id="id" name="id" placeholder="ID Buku" maxlength="10" value="{{ $book->id }}" disabled>
 
+                                                    @if ($errors->has('id'))
+                                                        <label id="lastname-error" class="error mt-2 text-danger" for="lastname">{{ $errors->first('id') }}</label>
+                                                    @endif
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                    <label for="name">Nama Buku</label>
+                                                    <input type="string" class="form-control" id="name" name="name" placeholder="Nama Buku" value="{{ $book->name }}">
 
-                                                <tbody>
-                                                    @foreach($books as $book)
-                                                        <tr>
-                                                            <td>{{ $book->id }}</td>
-                                                            <td>{{ $book->name }}</td>
-                                                            <td>{{ $book->stock }}</td>
-                                                            <td>{{ $book->price }}</td>
-                                                            <th>{{ $book->status }}</th>
-                                                            <th>
-                                                                <div class="d-flex align-items-center">
-                                                                    <!-- Actions -->
-                                                                    <div class="actions ml-3">
-                                                                        <form action="{{ route('admin.delete', $book->id) }}" method="POST">
-                                                                            @method('DELETE')
-                                                                            @csrf
-                                                                                <button type="submit" class="action-item mr-2" onclick="if (!confirm('Are you sure?')) { return false }" data-bs-toggle="tooltip" title="Delete">
-                                                                                    <i class="fa fa-trash"></i>
-                                                                                </button>
-                                                                        </form>
-                                                                        <a href="{{ route('admin.edit', $book->id) }}" class="action-item mr-2" data-bs-toggle="tooltip" title="Edit">
-                                                                            <i class="fa fa-edit"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                        </tr>
-                                                    @endforeach
-                                                    
-                                                </tbody>
-                                            </table>
+                                                    @if ($errors->has('name'))
+                                                        <div class="invalid-feedback" role="alert">
+                                                            {{ $errors->first('name') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                    <label for="price">Harga</label>
+                                                    <input type="number" class="form-control" id="price" name="price" placeholder="Harga" value="{{ $book->price }}">
+
+                                                    @if ($errors->has('price'))
+                                                        <div class="invalid-feedback" role="alert">
+                                                            {{ $errors->first('price') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                    <label for="stock">Stok</label>
+                                                    <input type="number" class="form-control" id="stock" name="stock" placeholder="Stok" value="{{ $book->stock }}">
+
+                                                    @if ($errors->has('stock'))
+                                                        <div class="invalid-feedback" role="alert">
+                                                            {{ $errors->first('stock') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="form-group mb-3 col-md-4">
+                                                    <label for="category" class="col-form-label">Kategori</label>
+                                                    <select id="category" class="form-control" name="category">
+                                                        <option value="fiksi" {{ $book->category == 'fiksi' ? 'selected' : '' }}>Fiksi</option>
+                                                        <option value="nonfiksi" {{ $book->category == 'nonfiksi' ? 'selected' : '' }}>Non Fiksi</option>
+                                                    </select>
+
+                                                    @if ($errors->has('category'))
+                                                        <div class="invalid-feedback" role="alert">
+                                                            {{ $errors->first('category') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <div class="form-group mb-3 col-md-4">
+                                                    <label for="status" class="col-form-label">Status Pengiriman</label>
+                                                    <select id="status" class="form-control" name="status">
+                                                        <option value="packing" {{ $book->status == 'packing' ? 'selected' : '' }}>Packing</option>
+                                                        <option value="delivery" {{ $book->status == 'delivery' ? 'selected' : '' }}>Delivery</option>
+                                                        <option value="arrived" {{ $book->status == 'arrived' ? 'selected' : '' }}>Arrived</option>
+                                                        <option value="canceled" {{ $book->status == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                                                    </select>
+
+                                                    @if ($errors->has('status'))
+                                                        <div class="invalid-feedback" role="alert">
+                                                            {{ $errors->first('status') }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
 
                                         </div> <!-- end card body-->
                                     </div> <!-- end card -->
@@ -322,30 +339,12 @@
     <script src="{{ asset('../js/scrool-bar.js') }}"></script>
     <script src="{{ asset('../js/todo-list.js') }}"></script>
     <!-- DATE TIME -->
-    <script src="{{ asset('../js/waktu.js') }}"></script>
     <script src="{{ asset('../js/active.js') }}"></script>
-
     <!-- Inject JS -->
     <script src="{{ asset('../js/mini-event-calendar.min.js') }}"></script>
     <script src="{{ asset('../js/mini-calendar-active.js') }}"></script>
     <script src="{{ asset('../js/apexchart.min.js') }}"></script>
     <script src="{{ asset('../js/dashboard-active.js') }}"></script>
-    <script src="{{ asset('../js/dashboard-active.js') }}"></script>
-    <script src="{{ asset('../js/absent/absent.js') }}"></script>
-
-    <!-- Inject JS -->
-    <script src="{{ asset('../js/dataTable/jquery.datatables.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/datatables.bootstrap4.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/datatable-responsive.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/datatable-button.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/button.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/button.html5.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/button.flash.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/button.print.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/datatables.keytable.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/datatables.select.min.js') }}"></script>
-    <script src="{{ asset('../js/dataTable/demo.datatable-init.js') }}"></script>
     
 </body>
 
